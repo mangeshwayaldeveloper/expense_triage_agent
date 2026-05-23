@@ -1,48 +1,55 @@
-# Expense Triage Agent — Minimal Implementation
+# Expense Triage Agent
 
-This repository contains a minimal FastAPI-based expense triage agent with deterministic tools and a simple orchestrator.
+This project is a FastAPI + Streamlit expense triage system that categorizes transactions, flags anomalies, and generates a monthly summary.
 
-Quick start
+## Execution Steps
 
-instructions are for windows, please check the instruction for
-mac os to activate and create virtual environment
+### 1) Create and activate virtual environment
 
-```
-create a virtual env
+Windows (PowerShell):
+
+```powershell
 python -m venv env
+env\Scripts\Activate.ps1
+```
 
-activate the virtual env
+### 2) Install dependencies
 
-env\scripts\activate
-
+```powershell
 pip install -r requirements.txt
+```
 
+### 3) Run backend API
 
+```powershell
 uvicorn app:app --reload
+```
 
+### 4) Run Streamlit frontend
 
-API
+Open a new terminal and run:
 
-- POST `/v1/triage` — multipart form: `file` CSV and optional 
-`instruction` string. Returns a JSON state including `review_needed` and `review_candidates` when low confidence items are present.
-- POST `/v1/triage/confirm` — JSON body with `ledger` (the original parsed rows) and `corrections` mapping `transaction_id` -> `category`. Returns final `ledger`, `anomalies`, and `summary`.
+```powershell
+streamlit run frontend/main.py
+```
 
-Design notes
+### 5) Run evaluation harness
 
-- Deterministic rules are in `src/expense_triage_agent/tools`.
-- An LLM wrapper is in `src/expense_triage_agent/llm/ollama_client.py` but LLM calls are optional by default.
-- The orchestrator implements the planner and tool routing.
+```powershell
+python tests/scenarios/test_harness.py
+```
 
-What I'd add with more time
+## API
 
-- LangGraph orchestration for visualizing nodes and pauses.
-- A web UI for the human-review checkpoint.
-- A richer evaluation harness with 8-10 deterministic scenarios and a `make test` runner.
+- POST `/v1/triage`: Upload CSV + instruction. Returns ledger, anomalies, summary, and review candidates when needed.
+- POST `/v1/triage/confirm`: Sends corrected categories and returns finalized ledger, anomalies, and summary.
+- POST `/v1/triage/confirm/stream`: Streams confirm progress and final result using SSE.
 
-- To Check the output
-- run the streamlit file by below command
-- streamlit run frontend/main.py
+## Notes
 
+- LLM usage is optional and falls back gracefully if Ollama is unavailable.
+- The human-review checkpoint is available in the Streamlit app for low-confidence items.
 
-- if any query or issue in running the file please contact me
-- mangeshwayal4@gmail.com
+## Contact
+
+- For issues while running the project: mangeshwayal4@gmail.com
