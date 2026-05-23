@@ -4,6 +4,23 @@ This project is a FastAPI + Streamlit expense triage system that categorizes tra
 
 ## Execution Steps
 
+### 0) Install local LLM (Ollama + llama3)
+
+This project uses a local LLM through Ollama.
+
+1. Install Ollama from: https://ollama.com/download
+2. Pull the model:
+
+```powershell
+ollama pull llama3
+```
+
+3. Start Ollama (if not already running):
+
+```powershell
+ollama serve
+```
+
 ### 1) Create and activate virtual environment
 
 Windows (PowerShell):
